@@ -1,10 +1,13 @@
 
-export type ViewType = 'home' | 'interested';
+export type ViewType = 'home' | 'interested' | 'coaches-nterpret' | 'my-profile';
+
+export type PlayerLevel = 'High School' | 'NCAA' | 'JUCO' | 'PRO';
 
 export interface Player {
   id: string;
   name: string;
   position: string;
+  level: PlayerLevel;
   round: string;
   graduationYear?: number | string;
   clutchFactor: number;
