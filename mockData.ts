@@ -1,5 +1,5 @@
 
-import { Player } from './types';
+import { Player, PlayerLevel } from './types';
 
 const firstNames = [
   'Jackson', 'Liam', 'Noah', 'Ethan', 'Logan', 'Lucas', 'Mason', 'Oliver', 'Elijah', 'Aiden',
@@ -14,6 +14,7 @@ const lastNames = [
 ];
 
 const positions = ['Pitcher', 'Catcher', 'Infielder', 'Outfielder', 'Shortstop', 'First Base', 'Third Base'];
+const levels: PlayerLevel[] = ['High School', 'NCAA', 'JUCO', 'PRO'];
 const statuses: Player['status'][] = ['active', 'inactive', 'pending'];
 
 const generatePlayers = (count: number): Player[] => {
@@ -37,6 +38,7 @@ const generatePlayers = (count: number): Player[] => {
       id: `${i + 1}`,
       name: `${lastName}, ${firstName}`,
       position: positions[Math.floor(Math.random() * positions.length)],
+      level: levels[Math.floor(Math.random() * levels.length)],
       round: 'Demo',
       graduationYear: gradYear,
       clutchFactor: 400 + Math.floor(Math.random() * 500),
