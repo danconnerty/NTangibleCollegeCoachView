@@ -4,7 +4,7 @@ import { Search, ChevronDown, ChevronUp, Star, Cpu, CheckCircle2, AlertTriangle,
 import { Player, ViewType } from '../types';
 import ScoutingModal from './ScoutingModal';
 
-type SortField = 'graduationYear' | 'clutchFactor' | 'name' | 'position' | 'fitScore';
+type SortField = 'graduationYear' | 'clutchFactor' | 'name' | 'position' | 'level' | 'fitScore';
 type SortDirection = 'asc' | 'desc';
 
 interface ParticipantTableProps {
@@ -12,6 +12,7 @@ interface ParticipantTableProps {
   players: Player[];
   setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
   externalPositionFilter: string;
+  externalLevelFilter: string;
   externalGradYearFilter: string;
 }
 
@@ -20,6 +21,7 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
   players, 
   setPlayers, 
   externalPositionFilter, 
+  externalLevelFilter,
   externalGradYearFilter 
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -89,6 +91,10 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
       result = result.filter(p => p.position === externalPositionFilter);
     }
 
+    if (externalLevelFilter !== 'All') {
+      result = result.filter(p => p.level === externalLevelFilter);
+    }
+
     if (externalGradYearFilter !== 'All') {
       result = result.filter(p => String(p.graduationYear) === externalGradYearFilter);
     }
@@ -103,7 +109,7 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
     });
 
     return result;
-  }, [players, view, searchQuery, externalPositionFilter, externalGradYearFilter, sortField, sortDirection]);
+  }, [players, view, searchQuery, externalPositionFilter, externalLevelFilter, externalGradYearFilter, sortField, sortDirection]);
 
   const SortIndicator = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ChevronDown size={14} className="opacity-20" />;
@@ -138,7 +144,7 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
             <tr>
               <th className="w-12 px-6 py-4"></th>
               <th 
-                className="w-[20%] px-2 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
+                className="w-[18%] px-2 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => handleSort('name')}
               >
                 <div className="flex items-center gap-1">
@@ -146,7 +152,7 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
                 </div>
               </th>
               <th 
-                className="w-[14%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
+                className="w-[12%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => handleSort('position')}
               >
                  <div className="flex items-center gap-1">
@@ -155,25 +161,33 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
               </th>
               <th 
                 className="w-[12%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => handleSort('level')}
+              >
+                 <div className="flex items-center gap-1">
+                  Level <SortIndicator field="level" />
+                </div>
+              </th>
+              <th 
+                className="w-[10%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => handleSort('graduationYear')}
               >
                  <div className="flex items-center gap-1">
-                  Graduation <SortIndicator field="graduationYear" />
+                  Grad <SortIndicator field="graduationYear" />
                 </div>
               </th>
               <th 
-                className="w-[14%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
+                className="w-[12%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => handleSort('clutchFactor')}
               >
                  <div className="flex items-center gap-1">
-                  Clutch Factor <SortIndicator field="clutchFactor" />
+                  Clutch <SortIndicator field="clutchFactor" />
                 </div>
               </th>
-              <th className="w-[18%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <th className="w-[16%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Status
               </th>
               <th 
-                className="w-[18%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
+                className="w-[16%] px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => handleSort('fitScore')}
               >
                 <div className="flex items-center justify-center gap-1">
@@ -197,15 +211,23 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
                         <Star size={18} fill={player.isInterested ? "currentColor" : "none"} />
                       </button>
                     </td>
-                    <td className="px-2 py-4 whitespace-nowrap">
+                    <td 
+                      className="px-2 py-4 whitespace-nowrap cursor-pointer hover:bg-white transition-colors"
+                      onClick={() => setSelectedPlayerId(player.id)}
+                    >
                       <div className="flex items-center">
-                        <span className="text-gray-900 font-semibold text-sm">
+                        <span className="text-blue-600 font-semibold text-sm hover:underline decoration-blue-400 decoration-2 underline-offset-4 transition-all">
                           {player.name}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                       {player.position}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                       <span className="px-2 py-1 rounded bg-gray-100 text-[10px] font-bold uppercase tracking-wider text-gray-600">
+                        {player.level}
+                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">
                       {player.graduationYear}
@@ -260,7 +282,7 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
               })
             ) : (
               <tr>
-                <td colSpan={7} className="px-6 py-20 text-center">
+                <td colSpan={8} className="px-6 py-20 text-center">
                   <div className="flex flex-col items-center gap-2 text-gray-400">
                     <Search size={32} className="opacity-20" />
                     <p className="italic text-sm">No athletes found in this view.</p>
